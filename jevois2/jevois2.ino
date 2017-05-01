@@ -30,9 +30,8 @@ long tiltval = TILTZERO * SCALE;
 char instr[INLEN + 1];
 void setup()
 {
-  Serial.begin(9600);
-  while (!Serial)
-  mySerial.begin(9600);
+  Serial.begin(38000);
+  mySerial.begin(38000);
   mySerial.setTimeout(1000000);
   pinMode(LEDPIN, OUTPUT);
   digitalWrite(LEDPIN, LOW);
@@ -49,6 +48,8 @@ void loop()
 {
   digitalWrite(LEDPIN, LOW);
   byte len = mySerial.readBytesUntil('\n', instr, INLEN);
+  Serial.print("Length: ");
+  Serial.println(len);
   Serial.print("Data: ");
   Serial.println(instr);
   instr[len] = 0;
