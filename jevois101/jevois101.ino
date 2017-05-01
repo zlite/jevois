@@ -3,9 +3,7 @@
 // We handle messages "T2D <targetx> <targety>", "T1D <targetx>", "PANGAIN <gain>", and "TILTGAIN <gain>".
 // targetx and targety are assumed to be in the -1000 ... 1000 range as output by the JeVois Kalman filters.
 // Here we only do simple PD control under the assumption that target coordinates have already been filtered upstream.
-#include <SoftwareSerial.h>
 #include <Servo.h>
-SoftwareSerial mySerial(2, 3); // RX, TX
 // Pin for LED, blinks as we receive serial commands:
 #define LEDPIN 13
 // Serial port to use: on chips with USB (e.g., 32u4), that usually is Serial1. On chips without USB, use Serial:
@@ -25,15 +23,16 @@ long pangain = 100;
 long tiltgain = 100;
 long panval = PANZERO * SCALE;
 long tiltval = TILTZERO * SCALE;
+long data = 0;
 // Buffer for received serial port bytes:
 #define INLEN 128
 char instr[INLEN + 1];
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(38000);
+  Serial1.begin(38000);
   while (!Serial)
-  mySerial.begin(115200);
-  mySerial.setTimeout(1000000);
+  Serial1.setTimeout(1000000);
   pinMode(LEDPIN, OUTPUT);
   digitalWrite(LEDPIN, LOW);
   panservo.attach(PANPIN);
@@ -41,14 +40,14 @@ void setup()
   tiltservo.attach(TILTPIN);
   tiltservo.write(tiltval / SCALE);
 // We are ready to rock, disable logs and turn on serial outputs on JeVois platform: 
-  mySerial.println("setpar serlog None");
-  mySerial.println("setpar serout Hard");
+  Serial1.println("setpar serlog None");
+  Serial1.println("setpar serout Hard");
   Serial.print("Starting...");
 }
 void loop()
 {
   digitalWrite(LEDPIN, LOW);
-  byte len = mySerial.readBytesUntil('\n', instr, INLEN);
+  byte len = Serial1.readBytesUntil('\n', instr, INLEN);
   Serial.print("Data: ");
   Serial.println(instr);
   instr[len] = 0;
