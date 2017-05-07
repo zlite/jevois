@@ -87,7 +87,7 @@ void loop()
     }
     tok = strtok(0, " \r\n");
   }
-  // Target coordinates are in range -1000 ... 1000. Servos want 0 ... 180.
+  // Target coordinates are in range -1000 ... 1000.  Servos want 0 ... 180.
   // We also need to negate as needed so that the servo turns to cancel any offset from center:
   if (state == 3 || state == 5)
   {
